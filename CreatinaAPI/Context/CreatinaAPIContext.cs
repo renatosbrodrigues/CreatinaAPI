@@ -11,4 +11,11 @@ public class CreatinaAPIContext : DbContext
 
     public DbSet<User> Users { get; set; }
     public DbSet<Creatine> Creatines { get; set; }
+    
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Creatine>().OwnsOne(c => c.WarningTime);
+
+        base.OnModelCreating(modelBuilder);
+    }
 }

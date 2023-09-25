@@ -1,5 +1,4 @@
-﻿using BCrypt.Net;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Cryptography;
