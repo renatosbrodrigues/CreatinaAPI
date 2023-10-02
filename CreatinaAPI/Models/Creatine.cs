@@ -31,6 +31,7 @@ public class Creatine
     [Required]
     public double WarningAmount { get; set; }
     [Required]
+    
     public HourMinute WarningTime { get; set; }
     [Required]
     public double DailyDose { get; set; }
