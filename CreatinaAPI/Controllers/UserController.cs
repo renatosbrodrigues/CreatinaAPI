@@ -1,5 +1,7 @@
 ﻿using CreatinaAPI.Context;
+using CreatinaAPI.CustomRequests;
 using CreatinaAPI.Models;
+using CreatinaAPI.Responses;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -48,7 +50,14 @@ public class UserController : ControllerBase
                 return NotFound("Usuário não encontrado");
             }
 
-            return Ok(user);
+            var publicUserResponse = new PublicUserResponse
+            {
+                UserId = user.UserId,
+                UserName = user.Name,
+                UserEmail = user.Email,
+            };
+
+            return Ok(publicUserResponse);
         }
         catch (Exception)
         {
@@ -57,8 +66,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
-
-    public ActionResult Post(User user)
+    public ActionResult Post([FromBody] CreateUserRequest request)
     {
         if (!ModelState.IsValid)
         {
@@ -67,19 +75,34 @@ public class UserController : ControllerBase
 
         var userInstance = new User
         {
-            Name = user.Name,
-            Email = user.Email,
-            Password = user.Password,
-            PasswordHash = user.PasswordHash,
+            Name = request.UserName,
+            Email = request.UserEmail,
+            Password = request.Password,
+            PasswordHash = request.PasswordHash,
 
         };
 
-        userInstance.SetPassword(user.Password);
-        Console.WriteLine("VERIFICACAO" + userInstance.VerifyPassword(user.PasswordHash));
+        userInstance.SetPassword(request.Password);
 
         _context.Users.Add(userInstance);
         _context.SaveChanges();
 
-        return new CreatedAtRouteResult("GetUser", new { id = user.UserId }, user);
+        return new CreatedAtRouteResult("GetUser", new { id = userInstance.UserId }, userInstance);
     }
+
+    [HttpPatch("{id:int}")]
+    public ActionResult Patch(int id, User user)
+    {
+        if(id != user.UserId)
+        {
+            return BadRequest("foram passados dois ids diferentes");
+        }
+
+        _context.Entry(user).State = EntityState.Modified;
+        _context.SaveChanges();
+
+        return Ok(user);
+
+    }
+
 }

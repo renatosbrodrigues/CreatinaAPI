@@ -12,7 +12,7 @@ namespace CreatinaAPI.Models;
 public class User
 {
     [Key]
-    [JsonIgnore]
+    [JsonPropertyName("id")]
     public int UserId { get; set; }
     [Required]
     [StringLength(64)]
